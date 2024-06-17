@@ -28,7 +28,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="text-gray-500 bg-primary px-4 py-5 md:px-8 border border-gray-300">
+    <footer className="text-gray-500 bg-primary px-4 py-5 md:px-8 border border-gray-300 font-poppins">
       <div className="max-w-lg sm:mx-auto sm:text-center">
         <img
           src="https://www.floatui.com/logo.svg"
