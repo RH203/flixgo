@@ -30,10 +30,7 @@ const Footer = () => {
   return (
     <footer className="text-gray-500 bg-primary px-4 py-5 md:px-8 border border-gray-300 font-poppins">
       <div className="max-w-lg sm:mx-auto sm:text-center">
-        <img
-          src="https://www.floatui.com/logo.svg"
-          className="w-32 sm:mx-auto"
-        />
+        <p className="text-indigo-400 text-2xl font-semibold">FlixGo</p>
         <p className="leading-relaxed mt-2 text-[15px]">
           Lorem Ipsum has been the industry&apos;s standard dummy text ever
           since the 1500s, when an unknown printer took a galley of type and
@@ -51,7 +48,7 @@ const Footer = () => {
       </ul>
       <div className="mt-8 items-center justify-between sm:flex">
         <div className="mt-4 sm:mt-0">
-          &copy; 2022 Float UI All rights reserved.
+          &copy; {new Date().getFullYear()} FlixGo All rights reserved.
         </div>
         <div className="mt-6 sm:mt-0">
           <ul className="flex items-center space-x-4">
