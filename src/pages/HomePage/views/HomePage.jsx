@@ -10,6 +10,13 @@ import { getData } from "../../../controller/controller";
 const HomePage = () => {
   const [data, setData] = useState([]);
   const [movieData, setMovieData] = useState([]);
+  const [valueMovie, setValueMovie] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const buttonTrending = [
+    { title: "Movie", value: "movie", click: "" },
+    { title: "Tv", value: "tv", click: "" },
+  ];
 
   useEffect(() => {
     const getCategoryMovie = async () => {
@@ -21,18 +28,27 @@ const HomePage = () => {
       }
     };
 
-    const getTrendingMovie = async () => {
-      try {
-        const fetchedData = await getData(trendingMovieList, "results");
-        setMovieData(fetchedData);
-      } catch (error) {
-        console.error("Error fetching data [MOVIE]:", error);
-      }
-    };
-
     getTrendingMovie();
     getCategoryMovie();
   }, []);
+
+  const getTrendingMovie = async (category = "movie") => {
+    try {
+      setValueMovie(category);
+      setIsLoading(true);
+
+      const fetchedData = await getData(
+        trendingMovieList + category + "/day",
+        "results",
+      );
+      setMovieData(fetchedData);
+    } catch (error) {
+      console.error("Error fetching data [MOVIE]:", error);
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="font-poppins">
@@ -104,11 +120,38 @@ const HomePage = () => {
       {/* Movie genre end */}
 
       {/* Movie Trending start */}
-      <div className=" mt-12">
+      <div className="space-y-10 mt-10">
         <div className="flex justify-between">
-          <p className="text-gray-800 font-semibold text-2xl">
-            Popular right now
-          </p>
+          <div className="flex sm:w-1/2 xs:1/2">
+            <p className="text-gray-800 font-semibold text-2xl">
+              Popular right now
+            </p>
+
+            <div className="dropdown dropdown-bottom">
+              <div
+                tabIndex={0}
+                role="button"
+                className="bg-indigo-600 px-2 py-1 rounded-lg text-gray-200 m-1"
+              >
+                Show more
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li>
+                  {buttonTrending.map((button, index) => (
+                    <button
+                      key={index}
+                      onClick={() => getTrendingMovie(button.value)}
+                    >
+                      {button.title}
+                    </button>
+                  ))}
+                </li>
+              </ul>
+            </div>
+          </div>
           <Buttons
             title={"More"}
             link={""}
@@ -118,22 +161,30 @@ const HomePage = () => {
           />
         </div>
 
-        <div className="mt-2 grid grid-cols-8 gap-1">
-          {Array.isArray(movieData) && movieData.length > 0 ? (
-            movieData
-              .slice(0, 8)
-              .map((movie, index) => (
-                <CardMovie
-                  key={index}
-                  title={movie.title}
-                  image={imageMovie + movie.poster_path}
-          
-                  link={""}
-                />
-              ))
-          ) : (
-            <p className="text-gray-400">No genres available.</p>
-          )}
+        <div className="grid grid-rows-1">
+          <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-2 gap-2">
+            {isLoading ? (
+              <span className="loading loading-bars loading-lg"></span>
+            ) : (
+              <>
+                {Array.isArray(movieData) && movieData.length > 0 ? (
+                  movieData
+                    .slice(0, 6)
+                    .map((movie, index) => (
+                      <CardMovie
+                        key={index}
+                        title={valueMovie !== "tv" ? movie.title : movie.name}
+                        image={imageMovie + movie.poster_path}
+                        rating={Math.round(movie.vote_average)}
+                        link={""}
+                      />
+                    ))
+                ) : (
+                  <p className="text-gray-400">No data available.</p>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
       {/* Movie Trending end */}
