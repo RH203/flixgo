@@ -19,7 +19,7 @@ const ProfileDropDown = (props) => {
   }, []);
 
   return (
-    <div className={`relative ${props.class}`}>
+    <div className={`relative ${props.class} font-poppins`}>
       <div className="flex items-center space-x-4">
         <button
           ref={profileRef}
@@ -69,7 +69,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-primary border-b shadow-md">
+    <nav className="bg-primary border-b shadow-md font-poppins">
       <div className="flex items-center space-x-8 py-3 px-4 max-w-screen-xl mx-auto md:px-8">
         <div className="flex-none lg:flex-initial">
           <a href="javascript:void(0)">
