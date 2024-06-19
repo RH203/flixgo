@@ -1,21 +1,37 @@
 import { useEffect, useState } from "react";
-import { Buttons } from "../../../components";
-import { getCategoryMovie } from "../controller/homepage";
+import { Buttons, CardMovie } from "../../../components";
+import {
+  imageMovie,
+  movieGenre,
+  trendingMovieList,
+} from "../../../constant/constant";
+import { getData } from "../../../controller/controller";
 
 const HomePage = () => {
   const [data, setData] = useState([]);
+  const [movieData, setMovieData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const getCategoryMovie = async () => {
       try {
-        const fetchedData = await getCategoryMovie();
+        const fetchedData = await getData(movieGenre, "genres");
         setData(fetchedData);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data [CATEGORY]:", error);
       }
     };
 
-    fetchData();
+    const getTrendingMovie = async () => {
+      try {
+        const fetchedData = await getData(trendingMovieList, "results");
+        setMovieData(fetchedData);
+      } catch (error) {
+        console.error("Error fetching data [MOVIE]:", error);
+      }
+    };
+
+    getTrendingMovie();
+    getCategoryMovie();
   }, []);
 
   return (
@@ -51,7 +67,7 @@ const HomePage = () => {
           </div>
         </div>
         <div className="flex-1 text-center mt-7 lg:mt-0 lg:ml-3 xs:hidden sm:hidden md:hidden lg:block">
-          <img src="/banner/banner1.svg" className="w-full  lg:w-full" />
+          <img src="/banner/banner1.svg" className="w-full lg:w-full" />
         </div>
       </section>
       {/* Banner end */}
@@ -69,7 +85,7 @@ const HomePage = () => {
           />
         </div>
 
-        <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-2 gap-1">
+        <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-2  gap-1">
           {Array.isArray(data) && data.length > 0 ? (
             data.slice(0, 8).map((genre, index) => (
               <a
@@ -88,7 +104,38 @@ const HomePage = () => {
       {/* Movie genre end */}
 
       {/* Movie Trending start */}
-      <div className=""></div>
+      <div className=" mt-12">
+        <div className="flex justify-between">
+          <p className="text-gray-800 font-semibold text-2xl">
+            Popular right now
+          </p>
+          <Buttons
+            title={"More"}
+            link={""}
+            style={
+              "text-gray-600 font-semibold text-2xl cursor-pointer underline"
+            }
+          />
+        </div>
+
+        <div className="mt-2 grid grid-cols-8 gap-1">
+          {Array.isArray(movieData) && movieData.length > 0 ? (
+            movieData
+              .slice(0, 8)
+              .map((movie, index) => (
+                <CardMovie
+                  key={index}
+                  title={movie.title}
+                  image={imageMovie + movie.poster_path}
+          
+                  link={""}
+                />
+              ))
+          ) : (
+            <p className="text-gray-400">No genres available.</p>
+          )}
+        </div>
+      </div>
       {/* Movie Trending end */}
     </div>
   );
