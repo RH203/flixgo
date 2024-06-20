@@ -133,7 +133,7 @@ const HomePage = () => {
                 role="button"
                 className="bg-indigo-600 px-2 py-1 rounded-lg text-gray-200 m-1"
               >
-                Show more
+                Movie
               </div>
               <ul
                 tabIndex={0}
@@ -154,7 +154,7 @@ const HomePage = () => {
           </div>
           <Buttons
             title={"More"}
-            link={""}
+            link={"popular"}
             style={
               "text-gray-600 font-semibold text-2xl cursor-pointer underline"
             }
@@ -162,10 +162,12 @@ const HomePage = () => {
         </div>
 
         <div className="grid grid-rows-1">
-          <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-2 gap-2">
-            {isLoading ? (
+          {isLoading ? (
+            <div className="mx-auto">
               <span className="loading loading-bars loading-lg"></span>
-            ) : (
+            </div>
+          ) : (
+            <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-2 gap-2">
               <>
                 {Array.isArray(movieData) && movieData.length > 0 ? (
                   movieData
@@ -183,8 +185,8 @@ const HomePage = () => {
                   <p className="text-gray-400">No data available.</p>
                 )}
               </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
       {/* Movie Trending end */}
