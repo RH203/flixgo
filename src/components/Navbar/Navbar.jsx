@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import propTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 // Profile Dropdown
 const ProfileDropDown = (props) => {
@@ -57,6 +59,10 @@ const ProfileDropDown = (props) => {
   );
 };
 
+ProfileDropDown.propTypes = {
+  class: propTypes.string
+};
+
 const Navbar = () => {
   const [menuState, setMenuState] = useState(false);
 
@@ -72,9 +78,9 @@ const Navbar = () => {
     <nav className="bg-primary border-b shadow-md font-poppins">
       <div className="flex items-center space-x-8 py-3 px-4 max-w-screen-xl mx-auto md:px-8">
         <div className="flex-none lg:flex-initial">
-          <a href="javascript:void(0)">
+          <Link href="/">
             <p className="text-indigo-400 text-2xl font-semibold">FlixGo</p>
-          </a>
+          </Link>
         </div>
         <div className="flex-1 flex items-center justify-between">
           <div
