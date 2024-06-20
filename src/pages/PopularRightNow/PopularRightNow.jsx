@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { imageMovie, trendingMovieList } from "../../constant/constant";
 import { getData } from "../../controller/controller";
@@ -10,6 +11,7 @@ const PopularRightNow = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [valueMovie, setValueMovie] = useState("");
+  const genres = useSelector((state) => state.categoryMovie.genres);
 
   const notify = () =>
     toast.info("Page doesn't exist!", {
@@ -21,15 +23,15 @@ const PopularRightNow = () => {
       draggable: true,
       progress: undefined,
       theme: "light",
-      transition: Bounce,
     });
 
   useEffect(() => {
     getTrendingMovie();
-  }, []);
+  }, [currentPage]);
 
   const getTrendingMovie = async (category = "movie") => {
     try {
+      console.log("getTrendingMovie");
       setValueMovie(category);
       setIsLoading(true);
 
@@ -38,54 +40,47 @@ const PopularRightNow = () => {
         "results",
         currentPage,
       );
-      // console.log(`Data: ${JSON.stringify(fetchedData)}`);
       setData(fetchedData);
     } catch (error) {
       console.error("Error fetching data [MOVIE]:", error);
-      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
   };
+
   const incrementCurrentPage = () => {
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
-    getTrendingMovie();
   };
 
   const decrementCurrentPage = () => {
     const prevPage = currentPage - 1;
-    if (prevPage <= 1) {
+    if (prevPage < 1) {
       notify();
-      setCurrentPage(1);
     } else {
       setCurrentPage(prevPage);
-      getTrendingMovie();
     }
+  };
+
+  const renderGenres = (genreIds) => {
+    return genreIds
+      .map((id) => genres.find((genre) => genre.id === id))
+      .filter((genre) => genre !== undefined)
+      .map((genre, index) => <span key={index}>{genre.name}</span>);
   };
 
   return (
     <div className="">
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition:Bounce
-      />
+      <ToastContainer position="top-center" theme="light" />
 
       <div className="">
-        {Array.isArray(data) && data.length > 0 ? (
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : Array.isArray(data) && data.length > 0 ? (
           <div className="grid grid-rows-1 gap-3">
             {data.map((movie, index) => (
               <div
-                className="grid grid-cols-2 gap-2 hover:bg-gray-300"
+                className="grid grid-cols-2 gap-2 hover:bg-gray-300 cursor-pointer"
                 key={index}
               >
                 <img
@@ -94,9 +89,9 @@ const PopularRightNow = () => {
                   className="col-end-1"
                 />
                 <div className="">
-                  <p className="">{movie.title}</p>
-                  <p className="">{movie.original_language}</p>
-                  <p></p>
+                  <p>{movie.title}</p>
+                  <p>{movie.original_language}</p>
+                  <p>{renderGenres(movie.genre_ids)}</p>
                 </div>
               </div>
             ))}
@@ -108,12 +103,13 @@ const PopularRightNow = () => {
         )}
       </div>
 
-      <div className="divider"></div>
-
       <div className="join flex justify-center items-center">
         <button
           className="join-item btn btn-outline btn-primary"
-          onClick={decrementCurrentPage}
+          onClick={() => {
+            decrementCurrentPage();
+            getTrendingMovie();
+          }}
         >
           «
         </button>
@@ -122,7 +118,10 @@ const PopularRightNow = () => {
         </button>
         <button
           className="join-item btn btn-outline btn-primary"
-          onClick={incrementCurrentPage}
+          onClick={() => {
+            incrementCurrentPage();
+            getTrendingMovie();
+          }}
         >
           »
         </button>
