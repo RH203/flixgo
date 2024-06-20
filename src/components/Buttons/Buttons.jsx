@@ -1,3 +1,4 @@
+import propTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 const Buttons = ({ title, style, link }) => {
@@ -6,6 +7,12 @@ const Buttons = ({ title, style, link }) => {
       {title}
     </Link>
   );
+};
+
+Buttons.propTypes = {
+  title: propTypes.string,
+  style: propTypes.string,
+  link: propTypes.string
 };
 
 export default Buttons;
