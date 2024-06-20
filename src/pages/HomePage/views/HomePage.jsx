@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import { Buttons, CardMovie } from "../../../components";
+
+import { useDispatch, useSelector } from "react-redux";
+import { setCategoryMovie } from "../../../redux/slice/categoryMovieSlice";
+
 import {
   imageMovie,
   movieGenre,
@@ -8,10 +12,13 @@ import {
 import { getData } from "../../../controller/controller";
 
 const HomePage = () => {
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
   const [movieData, setMovieData] = useState([]);
   const [valueMovie, setValueMovie] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const genres = useSelector((state) => state.categoryMovie.genres);
+  console.log(genres)
 
   const buttonTrending = [
     { title: "Movie", value: "movie", click: "" },
@@ -21,8 +28,9 @@ const HomePage = () => {
   useEffect(() => {
     const getCategoryMovie = async () => {
       try {
+        console.log("getCategoryMovie")
         const fetchedData = await getData(movieGenre, "genres");
-        setData(fetchedData);
+        dispatch(setCategoryMovie(fetchedData));
       } catch (error) {
         console.error("Error fetching data [CATEGORY]:", error);
       }
@@ -30,7 +38,7 @@ const HomePage = () => {
 
     getTrendingMovie();
     getCategoryMovie();
-  }, []);
+  }, [dispatch]);
 
   const getTrendingMovie = async (category = "movie") => {
     try {
@@ -94,7 +102,7 @@ const HomePage = () => {
           <p className="text-gray-800 font-semibold text-2xl">Genre movie</p>
           <Buttons
             title={"More"}
-            link={""}
+            link={"search"}
             style={
               "text-gray-600 font-semibold text-2xl cursor-pointer underline"
             }
@@ -102,19 +110,15 @@ const HomePage = () => {
         </div>
 
         <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-2  gap-1">
-          {Array.isArray(data) && data.length > 0 ? (
-            data.slice(0, 8).map((genre, index) => (
-              <a
-                href="#"
-                className="bg-indigo-600 px-4 py-3 rounded-lg text-white font-medium flex justify-center items-center text-center"
-                key={index}
-              >
-                {genre.name}
-              </a>
-            ))
-          ) : (
-            <p className="text-gray-400">No genres available.</p>
-          )}
+          {genres.slice(0, 8).map((genre, index) => (
+            <a
+              href="#"
+              className="bg-indigo-600 px-4 py-3 rounded-lg text-white font-medium flex justify-center items-center text-center"
+              key={index}
+            >
+              {genre.name}
+            </a>
+          ))}
         </div>
       </div>
       {/* Movie genre end */}
