@@ -1,10 +1,10 @@
 import axios from "axios";
 
 // Category movie
-export const getData = async (url, key) => {
+export const getData = async (url, key, page = 1) => {
   try {
     // console.log("getCategoryMovie: Run")
-    const response = await axios.get(url, {
+    const response = await axios.get(`${url}?page=${page}`, {
       headers: {
         Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
       },

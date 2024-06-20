@@ -1,22 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { IoStar } from "react-icons/io5";
 
-const CardMovie = ({ image, title, desc, link }) => {
+const CardMovie = ({ image, title, link , rating}) => {
   return (
-    <div className=" w-full shadow-xl">
+    <Link to={link} className=" w-full shadow-xl rounded-xl">
       <figure className="w-full">
-        <img src={image} alt="Shoes" className="rounded-xl" />
+        <img src={image} alt="Shoes" className="rounded-xl xs:w-full sm:w-full" />
       </figure>
-      <div className=" items-center text-center text-gray-800 mt-1">
-        <h2 className=" font-semibold">{title}</h2>
-        {/* <p>{desc}</p> */}
-        <div className="">
-          <Link to={link} className="">
-            More
-          </Link>
+      <div className="pl-2 mt-1 space-y-5">
+        <h2 className="font-semibold text-lg text-gray-600">{title}</h2>
+        <div className="flex items-center gap-1">
+          <p className="font-semibold text-lg text-gray-400"> {rating}</p>
+          <IoStar />
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
