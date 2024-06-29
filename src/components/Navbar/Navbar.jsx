@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import {useState, useRef, useEffect} from "react";
 import propTypes from "prop-types";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
+import {FaSearch} from "react-icons/fa";
 
 // Profile Dropdown
 const ProfileDropDown = (props) => {
@@ -8,9 +9,9 @@ const ProfileDropDown = (props) => {
   const profileRef = useRef();
 
   const navigation = [
-    { title: "Dashboard", path: "javascript:void(0)" },
-    { title: "Settings", path: "javascript:void(0)" },
-    { title: "Log out", path: "javascript:void(0)" },
+    {title: "Dashboard", path: "javascript:void(0)"},
+    {title: "Settings", path: "javascript:void(0)"},
+    {title: "Log out", path: "javascript:void(0)"},
   ];
 
   useEffect(() => {
@@ -68,10 +69,10 @@ const Navbar = () => {
 
   // Replace javascript:void(0) path with your path
   const navigation = [
-    { title: "Customers", path: "javascript:void(0)" },
-    { title: "Careers", path: "javascript:void(0)" },
-    { title: "Guides", path: "javascript:void(0)" },
-    { title: "Partners", path: "javascript:void(0)" },
+    {title: "Customers", path: "javascript:void(0)"},
+    {title: "Careers", path: "javascript:void(0)"},
+    {title: "Guides", path: "javascript:void(0)"},
+    {title: "Partners", path: "javascript:void(0)"},
   ];
 
   return (
@@ -95,31 +96,13 @@ const Navbar = () => {
                 </li>
               ))}
             </ul>
-            <ProfileDropDown class="mt-5 pt-5 border-t lg:hidden" />
+            <ProfileDropDown class="mt-5 pt-5 border-t lg:hidden"/>
           </div>
           <div className="flex-1 flex items-center justify-end space-x-2 sm:space-x-6">
-            <form className="flex items-center space-x-2 border rounded-md p-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 flex-none text-gray-300"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              <input
-                className="w-full outline-none appearance-none bg-primary placeholder-gray-500 text-gray-500 sm:w-auto"
-                type="text"
-                placeholder="Search"
-              />
-            </form>
-            <ProfileDropDown class="hidden lg:block" />
+            <Link to={"search"}>
+              <FaSearch size={20} className={"text-gray-600"}/>
+            </Link>
+            <ProfileDropDown class="hidden lg:block"/>
             <button
               className="outline-none text-gray-400 block lg:hidden"
               onClick={() => setMenuState(!menuState)}
