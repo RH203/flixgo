@@ -16,3 +16,9 @@ export const getData = async (url, key, page = 1) => {
     return `${error}`;
   }
 };
+
+
+// Search by category
+export const getByCategory = async (categoryId) => {
+
+}

@@ -75,7 +75,7 @@ const PopularRightNow = () => {
 
       <div className="">
         {isLoading ? (
-          <p>Loading...</p>
+          <span className="loading loading-bars loading-lg"></span>
         ) : Array.isArray(data) && data.length > 0 ? (
           <div className="grid grid-rows-1 gap-3">
             {data.map((movie, index) => (

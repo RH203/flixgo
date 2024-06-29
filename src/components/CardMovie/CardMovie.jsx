@@ -5,20 +5,16 @@ import propTypes from "prop-types";
 
 const CardMovie = ({ image, title, link, rating }) => {
   return (
-    <Link to={link} className=" w-full shadow-xl rounded-xl">
+    <Link to={link} className="w-full rounded-xl shadow-xl pb-3">
       <figure className="w-full">
         <img
           src={image}
-          alt="Shoes"
+          alt="Image not found"
           className="rounded-xl xs:w-full sm:w-full"
         />
       </figure>
-      <div className="pl-2 mt-1 space-y-5">
+      <div className="pl-2 mt-1">
         <h2 className="font-semibold text-lg text-gray-600">{title}</h2>
-        <div className="flex items-center gap-1">
-          <p className="font-semibold text-lg text-gray-400"> {rating}</p>
-          <IoStar />
-        </div>
       </div>
     </Link>
   );

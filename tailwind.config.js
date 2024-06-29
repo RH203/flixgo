@@ -12,7 +12,11 @@ export default {
       fontFamily: {
         poppins: ["Poppins"],
       },
+
     },
+  },
+  daisyui: {
+    themes: ["light"],
   },
   plugins: [require("daisyui")],
 };
