@@ -66,7 +66,7 @@ const PopularRightNow = () => {
     return genreIds
       .map((id) => genres.find((genre) => genre.id === id))
       .filter((genre) => genre !== undefined)
-      .map((genre, index) => <span key={index}>{genre.name}</span>);
+      .map((genre, index) => <span key={index}>{` ${genre.name} `}</span>);
   };
 
   return (
