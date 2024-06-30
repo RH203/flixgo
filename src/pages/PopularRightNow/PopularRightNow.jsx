@@ -1,7 +1,7 @@
 import {useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {imageMovie, trendingMovieListUrl} from "../../constant/constant";
-import {getData} from "../../controller/controller";
+import {convertIso, getData} from "../../controller/controller";
 import {ToastContainer, toast, Bounce} from "react-toastify";
 import {TfiAngleDoubleLeft, TfiAngleDoubleRight} from "react-icons/tfi";
 import {hasFlag} from 'country-flag-icons'
@@ -98,10 +98,11 @@ const PopularRightNow = () => {
                 <div className="col-span-2">
                   <p className={"text-lg"}>{movie.title}</p>
 
-                  <div>{hasFlag(movie.original_language.toUpperCase()) ? (
+                  <div>{hasFlag(convertIso(movie.original_language)) ? (
                     <img
                       alt="United States"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${movie.original_language.toUpperCase()}.svg`}
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${convertIso(movie.original_language)}.svg`}
+                      className={"size-8"}
                     />
                   ) : (
                     <p>No icon</p>
