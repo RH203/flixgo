@@ -1,8 +1,10 @@
-import { useSelector } from "react-redux";
-import React, { useEffect, useState } from "react";
-import { imageMovie, trendingMovieListUrl } from "../../constant/constant";
-import { getData } from "../../controller/controller";
-import { ToastContainer, toast, Bounce } from "react-toastify";
+import {useSelector} from "react-redux";
+import React, {useEffect, useState} from "react";
+import {imageMovie, trendingMovieListUrl} from "../../constant/constant";
+import {getData} from "../../controller/controller";
+import {ToastContainer, toast, Bounce} from "react-toastify";
+import {TfiAngleDoubleLeft, TfiAngleDoubleRight} from "react-icons/tfi";
+import {hasFlag} from 'country-flag-icons'
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -43,6 +45,7 @@ const PopularRightNow = () => {
       setData(fetchedData);
     } catch (error) {
       console.error("Error fetching data [MOVIE]:", error);
+      setIsLoading(false)
     } finally {
       setIsLoading(false);
     }
@@ -66,32 +69,49 @@ const PopularRightNow = () => {
     return genreIds
       .map((id) => genres.find((genre) => genre.id === id))
       .filter((genre) => genre !== undefined)
-      .map((genre, index) => <span key={index}>{` ${genre.name} `}</span>);
+      .map((genre, index) => (
+        <span className={"bg-indigo-400 py-1 rounded-lg text-sm text-center"} key={index}>
+            {`${genre.name}`}
+          </span>
+      ));
   };
 
   return (
     <div className="">
-      <ToastContainer position="top-center" theme="light" />
+      <ToastContainer position="top-center" theme="light"/>
 
       <div className="">
         {isLoading ? (
           <span className="loading loading-bars loading-lg"></span>
         ) : Array.isArray(data) && data.length > 0 ? (
-          <div className="grid grid-rows-1 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {data.map((movie, index) => (
               <div
-                className="grid grid-cols-2 gap-2 hover:bg-gray-300 cursor-pointer"
+                className="grid grid-cols-3 rounded-lg gap-2 hover:bg-gray-300 cursor-pointer"
                 key={index}
               >
                 <img
                   src={imageMovie + movie.poster_path}
                   alt="Movie Poster"
-                  className="col-end-1"
+                  className="col-end-1 rounded-lg"
                 />
-                <div className="">
-                  <p>{movie.title}</p>
-                  <p>{movie.original_language}</p>
-                  <p>{renderGenres(movie.genre_ids)}</p>
+                <div className="col-span-2">
+                  <p className={"text-lg"}>{movie.title}</p>
+
+                  <div>{hasFlag(movie.original_language.toUpperCase()) ? (
+                    <img
+                      alt="United States"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${movie.original_language.toUpperCase()}.svg`}
+                    />
+                  ) : (
+                    <p>No icon</p>
+                  )
+                  }
+                  </div>
+                  <div className={"grid grid-cols-2 gap-1"}>
+                    {renderGenres(movie.genre_ids)}
+                  </div>
+
                 </div>
               </div>
             ))}
@@ -103,27 +123,27 @@ const PopularRightNow = () => {
         )}
       </div>
 
-      <div className="join flex justify-center items-center">
+      <div className="join flex justify-center items-center mt-10">
         <button
-          className="join-item btn btn-outline btn-primary"
+          className="join-item btn btn-outline "
           onClick={() => {
             decrementCurrentPage();
             getTrendingMovie();
           }}
         >
-          «
+          <TfiAngleDoubleLeft/>
         </button>
-        <button className="join-item btn btn-outline btn-primary">
+        <button className="join-item btn btn-outline ">
           Page {currentPage}
         </button>
         <button
-          className="join-item btn btn-outline btn-primary"
+          className="join-item btn btn-outline "
           onClick={() => {
             incrementCurrentPage();
             getTrendingMovie();
           }}
         >
-          »
+          <TfiAngleDoubleRight/>
         </button>
       </div>
     </div>
