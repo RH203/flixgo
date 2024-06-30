@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { imageMovie, trendingMovieList } from "../../constant/constant";
+import { imageMovie, trendingMovieListUrl } from "../../constant/constant";
 import { getData } from "../../controller/controller";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 
@@ -36,7 +36,7 @@ const PopularRightNow = () => {
       setIsLoading(true);
 
       const fetchedData = await getData(
-        trendingMovieList + category + "/day",
+        trendingMovieListUrl + category + "/day",
         "results",
         currentPage,
       );
