@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { IoStar } from "react-icons/io5";
 import propTypes from "prop-types";
 
 const CardMovie = ({ image, title, link, rating }) => {
