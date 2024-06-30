@@ -4,23 +4,29 @@ import {useDispatch, useSelector} from "react-redux";
 import {setCategoryMovie} from "../../../redux/slice/categoryMovieSlice";
 import {
   imageMovie,
-  movieGenre,
-  trendingMovieList,
+  movieGenreUrl,
+  trendingMovieListUrl, tvSeriesUrl,
 } from "../../../constant/constant";
 import {getData} from "../../../controller/controller";
 
 const HomePage = () => {
   const dispatch = useDispatch();
 
+  // Movie
   const [movieData, setMovieData] = useState([]);
   const [valueMovie, setValueMovie] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Tv series
+  const [tvData, setTvData] = useState([])
+  const [tvValue, setTvValue] = useState("");
+  const [tvIsLoading, setTvIsLoading] = useState(false);
 
 
   useEffect(() => {
     const getCategoryMovie = async () => {
       try {
-        const fetchedData = await getData(movieGenre, "genres");
+        const fetchedData = await getData(movieGenreUrl, "genres");
         dispatch(setCategoryMovie(fetchedData));
       } catch (error) {
         console.error("Error fetching data [CATEGORY]:", error);
@@ -29,6 +35,7 @@ const HomePage = () => {
 
     getTrendingMovie();
     getCategoryMovie();
+    getTvSeries();
   }, [dispatch]);
 
   const getTrendingMovie = async (category = "movie", time = "day") => {
@@ -38,11 +45,11 @@ const HomePage = () => {
       setIsLoading(true);
 
       const fetchedData = await getData(
-        trendingMovieList + category + "/" + time,
+        trendingMovieListUrl + category + "/" + time,
         "results",
       );
       setMovieData(fetchedData);
-      console.log(fetchedData)
+      // console.log(fetchedData)
     } catch (error) {
       console.error("Error fetching data [MOVIE]:", error);
       setIsLoading(false);
@@ -50,6 +57,22 @@ const HomePage = () => {
       setIsLoading(false);
     }
   };
+
+  const getTvSeries = async (category = "airing_today") => {
+    try {
+      setTvValue(category)
+      setTvIsLoading(true);
+
+      const fetchedData = await getData(tvSeriesUrl + category, "results")
+      setTvData(fetchedData)
+      console.log(`getTvSeries for category: ${fetchedData}`);
+    } catch (error) {
+      console.error("Error fetching data [MOVIE]:", error);
+      setTvIsLoading(false);
+    } finally {
+      setTvIsLoading(false)
+    }
+  }
 
   return (
     <div className="font-poppins">
@@ -93,9 +116,9 @@ const HomePage = () => {
 
       {/* Movie Trending start */}
       <div className="space-y-10 mt-10">
+
+        {/* Header Movie start*/}
         <div>
-
-
           <div className="flex justify-between">
 
             <div className="flex">
@@ -114,7 +137,7 @@ const HomePage = () => {
           </div>
 
 
-          <div className="flex w-full items-center">
+          <div className="flex w-full items-center mt-2">
             <div className="join shadow-lg">
               <input className="join-item btn" type="radio" name="options" aria-label="Movie"
                      onClick={() => getTrendingMovie("movie")}/>
@@ -132,39 +155,118 @@ const HomePage = () => {
                      onClick={() => getTrendingMovie(valueMovie, "week")}/>
             </div>
           </div>
-
         </div>
+        {/* Header Movie End*/}
 
-        <div className="grid grid-rows-1">
+        <div className={`grid-rows-1 ${isLoading ? "block h-20" : "grid"}`}>
           {isLoading ? (
-            <div className="flex justify-center my-auto">
-              <span className="loading loading-bars loading-lg"></span>
+            <div className="flex justify-center items-center h-full">
+              <span className="loading loading-bars loading-lg "></span>
             </div>
           ) : (
             <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-2 gap-2">
               <>
-                {Array.isArray(movieData) && movieData.length > 0 ? (
-                  movieData
-                    .slice(0, 6)
-                    .map((movie, index) => (
+                {isLoading ? (
+                  <div className="skeleton"></div>
+                ) : (
+                  Array.isArray(movieData) && movieData.length > 0 ? (
+                    movieData.slice(0, 6).map((movie, index) => (
                       <CardMovie
                         key={index}
-                        title={ movie.title || movie.name }
-                        image={imageMovie + (movie.poster_path || movie.profile_path) }
+                        title={movie.title || movie.name}
+                        image={imageMovie + (movie.poster_path || movie.profile_path)}
                         rating={Math.round(movie.vote_average)}
                         link={""}
                       />
                     ))
-                ) : (
-                  <p className="text-gray-400">No data available.</p>
+                  ) : (
+                    <p className="text-gray-400">No data available.</p>
+                  )
                 )}
               </>
             </div>
+
           )}
         </div>
       </div>
       {/* Movie Trending end */}
+
+      {/* TV Series list start*/}
+      <div className={"my-28 space-y-10"}>
+
+        {/* Header TV Series list start*/}
+        <div>
+          <div className="flex justify-between">
+            <div className="flex">
+              <p className="text-gray-800 font-semibold text-2xl">
+                TV Series
+              </p>
+            </div>
+
+            <Buttons
+              title={"More"}
+              link={"#"}
+              style={
+                "text-gray-600 font-semibold text-2xl cursor-pointer underline"
+              }
+            />
+          </div>
+
+          <div className="join shadow-lg mt-2">
+            <input className="join-item btn" type="radio" name="options" aria-label="Airing today"
+                   onClick={() => getTvSeries("airing_today")}/>
+            <input className="join-item btn" type="radio" name="options" aria-label="On the air"
+                   onClick={() => getTvSeries("on_the_air")}/>
+            <input className="join-item btn" type="radio" name="options" aria-label="Popular tv series"
+                   onClick={() => getTvSeries("popular")}/>
+            <input className="join-item btn" type="radio" name="options" aria-label="Top rated"
+                   onClick={() => getTvSeries("top_rated")}/>
+          </div>
+
+        </div>
+        {/* Header TV Series list start*/}
+
+        {/* Main TV Series list start*/}
+        <div>
+          <div className={`grid-rows-1 ${tvIsLoading ? "block h-20" : "grid"}`}>
+            {tvIsLoading ? (
+              <div className="flex justify-center items-center h-full">
+                <span className="loading loading-bars loading-lg "></span>
+              </div>
+            ) : (
+              <div className="mt-2 grid lg:grid-cols-6 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-2 gap-2">
+                <>
+                  {tvIsLoading ? (
+                    <div className="skeleton"></div>
+                  ) : (
+                    Array.isArray(tvData) && tvData.length > 0 ? (
+                      tvData.slice(0, 6).map((movie, index) => (
+                        <CardMovie
+                          key={index}
+                          title={movie.title || movie.name}
+                          image={imageMovie + (movie.poster_path || movie.profile_path)}
+                          rating={Math.round(movie.vote_average)}
+                          link={""}
+                        />
+                      ))
+                    ) : (
+                      <p className="text-gray-400">No data available.</p>
+                    )
+                  )}
+                </>
+              </div>
+
+            )}
+          </div>
+        </div>
+        {/* Main TV Series list End*/}
+
+      </div>
+      {/* TV Series list end*/}
+
     </div>
+
+
   );
 };
 

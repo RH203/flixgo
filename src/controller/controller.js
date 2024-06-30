@@ -1,4 +1,5 @@
 import axios from "axios";
+import {iso} from "../constant/iso.js";
 
 // Category movie
 export const getData = async (url, key, page = 1) => {
@@ -22,3 +23,9 @@ export const getData = async (url, key, page = 1) => {
 export const getByCategory = async (categoryId) => {
 
 }
+
+// Convert iso
+export const convertIso = (isoCode) => {
+  return iso[isoCode] || null
+}
+
