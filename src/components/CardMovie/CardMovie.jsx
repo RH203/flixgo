@@ -1,10 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+
+
 import propTypes from "prop-types";
+import {useNavigate} from "react-router-dom";
 
 const CardMovie = ({ image, title, link, rating }) => {
+  const navigate = useNavigate();
   return (
-    <Link to={link} className="w-full rounded-xl shadow-xl pb-3">
+    <div className="w-full rounded-xl shadow-xl pb-3" onClick={() => navigate(link)}>
       <figure className="w-full">
         <img
           src={image}
@@ -15,7 +18,7 @@ const CardMovie = ({ image, title, link, rating }) => {
       <div className="pl-2 mt-1">
         <h2 className="font-semibold text-lg text-gray-600">{title}</h2>
       </div>
-    </Link>
+    </div>
   );
 };
 

@@ -8,9 +8,11 @@ import {
   trendingMovieListUrl, tvSeriesUrl,
 } from "../../../constant/constant";
 import {getData} from "../../../controller/controller";
+import {useNavigate} from "react-router-dom";
 
 const HomePage = () => {
   const dispatch = useDispatch();
+
 
   // Movie
   const [movieData, setMovieData] = useState([]);
@@ -65,7 +67,7 @@ const HomePage = () => {
 
       const fetchedData = await getData(tvSeriesUrl + category, "results")
       setTvData(fetchedData)
-      console.log(`getTvSeries for category: ${fetchedData}`);
+      // console.log(`getTvSeries for category: ${fetchedData}`);
     } catch (error) {
       console.error("Error fetching data [MOVIE]:", error);
       setTvIsLoading(false);
@@ -176,7 +178,7 @@ const HomePage = () => {
                         title={movie.title || movie.name}
                         image={imageMovie + (movie.poster_path || movie.profile_path)}
                         rating={Math.round(movie.vote_average)}
-                        link={""}
+                        link={`detail-movie/${movie.id}`}
                       />
                     ))
                   ) : (
