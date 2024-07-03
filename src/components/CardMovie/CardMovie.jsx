@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 const CardMovie = ({ image, title, link, rating }) => {
   const navigate = useNavigate();
   return (
-    <div className="w-full rounded-xl shadow-xl pb-3" onClick={() => navigate(link)}>
+    <div className="w-full rounded-xl shadow-xl pb-3 cursor-pointer" onClick={() => navigate(link)}>
       <figure className="w-full">
         <img
           src={image}

@@ -9,7 +9,7 @@ import {useNavigate} from "react-router-dom";
 
 
 import "react-toastify/dist/ReactToastify.css";
-import {setInitLoad, setMovie} from "../../redux/slice/movieSlice.js";
+import {setMovie} from "../../redux/slice/movieSlice.js";
 
 const PopularRightNow = () => {
   const dispatch = useDispatch();
@@ -21,6 +21,7 @@ const PopularRightNow = () => {
 
   const genres = useSelector((state) => state.categoryMovie.genres) || [];
   const data = useSelector((state) => state.movie.data) || [];
+
 
   const notify = () =>
     toast.info("Page doesn't exist!", {
@@ -40,7 +41,6 @@ const PopularRightNow = () => {
 
   const getTrendingMovie = async (category = "movie") => {
     try {
-      dispatch(setInitLoad(true));
       console.log("getTrendingMovie");
       setValueMovie(category);
       setIsLoading(true);
@@ -99,7 +99,7 @@ const PopularRightNow = () => {
               <div
                 className="grid grid-cols-3 rounded-lg gap-2 hover:bg-gray-300 cursor-pointer"
                 key={index}
-                onClick={() =>  navigate(`/detail-movie/${movie.id}`)}
+                onClick={() => navigate(`/detail-movie/${movie.id}`)}
               >
                 <img
                   src={imageMovie + movie.poster_path}

@@ -2,26 +2,22 @@ import {useEffect, useState} from "react";
 import {Buttons, CardMovie} from "../../../components";
 import {useDispatch, useSelector} from "react-redux";
 import {setCategoryMovie} from "../../../redux/slice/categoryMovieSlice";
-import {
-  imageMovie,
-  movieGenreUrl,
-  trendingMovieListUrl, tvSeriesUrl,
-} from "../../../constant/constant";
+import {imageMovie, movieGenreUrl, trendingMovieListUrl, tvSeriesUrl,} from "../../../constant/constant";
 import {getData} from "../../../controller/controller";
-import {useNavigate} from "react-router-dom";
+import {setDataPopular, setDataTvSeries} from "../../../redux/slice/homepageSlice.js";
 
 const HomePage = () => {
   const dispatch = useDispatch();
 
 
   // Movie
-  const [movieData, setMovieData] = useState([]);
+  const movieData = useSelector((state) => state.homepage.dataPopular)
   const [valueMovie, setValueMovie] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Tv series
   const [tvData, setTvData] = useState([])
-  const [tvValue, setTvValue] = useState("");
+  const tvValue = useSelector((state) => state.homepage.dataTvSeries)
   const [tvIsLoading, setTvIsLoading] = useState(false);
 
 
@@ -50,7 +46,7 @@ const HomePage = () => {
         trendingMovieListUrl + category + "/" + time,
         "results",
       );
-      setMovieData(fetchedData);
+      dispatch(setDataPopular(fetchedData))
       // console.log(fetchedData)
     } catch (error) {
       console.error("Error fetching data [MOVIE]:", error);
@@ -62,14 +58,13 @@ const HomePage = () => {
 
   const getTvSeries = async (category = "airing_today") => {
     try {
-      setTvValue(category)
       setTvIsLoading(true);
-
       const fetchedData = await getData(tvSeriesUrl + category, "results")
-      setTvData(fetchedData)
+      dispatch(setDataTvSeries(fetchedData))
+      // setTvData(fetchedData)
       // console.log(`getTvSeries for category: ${fetchedData}`);
     } catch (error) {
-      console.error("Error fetching data [MOVIE]:", error);
+      console.error("Error fetching data [TV_SERIES]:", error);
       setTvIsLoading(false);
     } finally {
       setTvIsLoading(false)
@@ -97,14 +92,14 @@ const HomePage = () => {
               title={"Get started"}
               link={""}
               style={
-                "px-7 py-3 w-full bg-white text-gray-800 text-center rounded-md shadow-md block sm:w-auto font-semibold hover:bg-gray-500 hover:text-white transition duration-500"
+                "px-7 py-4 w-full bg-white text-gray-800 text-center rounded-md shadow-md block sm:w-auto font-semibold hover:bg-gray-500 hover:text-white "
               }
             />
             <Buttons
               title={"Try it out"}
               link={""}
               style={
-                "px-7 py-3 w-full bg-indigo-600 text-gray-200 text-center rounded-md block sm:w-auto font-semibold "
+                "px-7 py-4 w-full bg-indigo-600 hover:bg-indigo-400 text-gray-200 text-center rounded-md block sm:w-auto font-semibold "
               }
             />
           </div>
@@ -241,14 +236,14 @@ const HomePage = () => {
                   {tvIsLoading ? (
                     <div className="skeleton"></div>
                   ) : (
-                    Array.isArray(tvData) && tvData.length > 0 ? (
-                      tvData.slice(0, 6).map((movie, index) => (
+                    Array.isArray(tvValue) && tvValue.length > 0 ? (
+                      tvValue.slice(0, 6).map((movie, index) => (
                         <CardMovie
                           key={index}
                           title={movie.title || movie.name}
                           image={imageMovie + (movie.poster_path || movie.profile_path)}
                           rating={Math.round(movie.vote_average)}
-                          link={""}
+                          link={`detail-movie/${movie.id}`}
                         />
                       ))
                     ) : (
