@@ -4,20 +4,21 @@ import {useDispatch, useSelector} from "react-redux";
 import {imageMovie} from "../../constant/constant.js";
 import {hasFlag} from "country-flag-icons";
 import {convertIso} from "../../controller/controller.js";
-import {increment} from "../../redux/slice/cartSlice.js";
+import {increment, setDataCart} from "../../redux/slice/cartSlice.js";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function DetailMovie() {
   const dispatch = useDispatch();
   const {id} = useParams();
 
-  const favorite = useSelector((state) => state.cart.total)
+  const cart = useSelector((state) => state.cart.data);
   const data = useSelector((state) => state.movie.data);
   const popularData = useSelector((state) => state.homepage.dataPopular)
   const tvSeries = useSelector((state) => state.homepage.dataTvSeries)
   const genres = useSelector((state) => state.categoryMovie.genres) || [];
 
   const [detailMovie, setDetailMovie] = useState(null);
-
 
   useEffect(() => {
     const findMovie = () => {
@@ -36,6 +37,18 @@ function DetailMovie() {
     }
   }, [id, data, popularData, tvSeries]);
 
+  const notify = () =>
+    toast.info("Oops movie already exist!", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
   const renderGenres = (genreIds) => {
     if (!genreIds) return null;
     return genreIds
@@ -49,11 +62,18 @@ function DetailMovie() {
   };
 
   const addToCart = () => {
-    dispatch(increment())
+    const item = cart.find((movie) => movie.id === detailMovie.id)
+    if (item === undefined) {
+      dispatch(setDataCart(detailMovie))
+      dispatch(increment())
+    } else {
+      notify()
+    }
   }
 
   return (
     <div className={"w-full"}>
+      <ToastContainer position="top-center" theme="light"/>
       {detailMovie !== null ? (
         <div className={"grid grid-cols-3 gap-3"}>
           <img src={imageMovie + (detailMovie.poster_path || detailMovie.profile_path)}
