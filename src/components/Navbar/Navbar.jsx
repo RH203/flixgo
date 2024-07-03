@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {FaSearch} from "react-icons/fa";
 import {MdFavoriteBorder} from "react-icons/md";
 import {useSelector} from "react-redux";
+import {Buttons} from "../index.js";
 
 // Profile Dropdown
 const ProfileDropDown = (props) => {
@@ -58,6 +59,7 @@ ProfileDropDown.propTypes = {
 
 const Navbar = () => {
   const favorite = useSelector((state) => state.cart.total)
+  const data = useSelector((state) => state.cart.data)
   const [menuState, setMenuState] = useState(false);
 
   // Replace  path with your path
@@ -88,10 +90,25 @@ const Navbar = () => {
           <Link to={"search"}>
             <FaSearch size={20} className={"text-gray-600"}/>
           </Link>
-          <Link to={"favorite"} className={"indicator"}>
-            {favorite > 0 && (<span className="indicator-item badge bg-indigo-600 text-white">{favorite}</span>)}
-            <MdFavoriteBorder size={25} className={"text-gray-600"}/>
-          </Link>
+          <details className="dropdown">
+            <summary className="btn m-1 indicator">
+              {favorite > 0 && (<span className="indicator-item badge bg-indigo-600 text-white">{favorite}</span>)}
+              <MdFavoriteBorder size={25} className={"text-gray-600"}/>
+            </summary>
+            <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+              {data.map((item) => (
+                <li key={item.id} className={"p-2"}>{item.title}</li>
+              ))}
+              <li>
+                <Buttons
+                  title={"See more"}
+                  link={"favorite"}
+                  style={"bg-white hover:bg-white border-0 text-blue-600"}
+                />
+              </li>
+            </ul>
+          </details>
+
           <ProfileDropDown class="hidden lg:block"/>
           <button
             className="outline-none text-gray-400 block lg:hidden"
