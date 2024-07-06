@@ -13,29 +13,13 @@ function DetailMovie() {
   const {id} = useParams();
 
   const cart = useSelector((state) => state.cart.data);
-  const data = useSelector((state) => state.movie.data);
-  const popularData = useSelector((state) => state.homepage.dataPopular)
-  const tvSeries = useSelector((state) => state.homepage.dataTvSeries)
   const genres = useSelector((state) => state.categoryMovie.genres) || [];
+  const detail = useSelector((state) => state.detail.data)
 
-  const [detailMovie, setDetailMovie] = useState(null);
 
   useEffect(() => {
-    const findMovie = () => {
-      let movie = data.find((movie) => movie.id === parseInt(id));
-      if (!movie && popularData) {
-        movie = popularData.find((movie) => movie.id === parseInt(id));
-      }
-      if (!movie && tvSeries) {
-        movie = tvSeries.find((movie) => movie.id === parseInt(id));
-      }
-      setDetailMovie(movie || null);
-    };
-
-    if (data.length > 0 || popularData || tvSeries) {
-      findMovie();
-    }
-  }, [id, data, popularData, tvSeries]);
+    window.scrollTo(0, 0)
+  }, [id, detail]);
 
   const notify = () =>
     toast.info("Oops movie already exist!", {
@@ -55,16 +39,16 @@ function DetailMovie() {
       .map((id) => genres.find((genre) => genre.id === id))
       .filter((genre) => genre !== undefined)
       .map((genre, index) => (
-        <span className={"bg-indigo-400 py-1 rounded-lg text-sm text-center"} key={index}>
+        <span className={"bg-indigo-400 font-medium py-1 rounded-lg text-[0.7rem] text-center"} key={index}>
           {`${genre.name}`}
         </span>
       ));
   };
 
   const addToCart = () => {
-    const item = cart.find((movie) => movie.id === detailMovie.id)
+    const item = cart.find((movie) => movie.id === detail.id)
     if (item === undefined) {
-      dispatch(setDataCart(detailMovie))
+      dispatch(setDataCart(detail))
       dispatch(increment())
     } else {
       notify()
@@ -74,21 +58,21 @@ function DetailMovie() {
   return (
     <div className={"w-full"}>
       <ToastContainer position="top-center" theme="light"/>
-      {detailMovie !== null ? (
+      {detail !== null ? (
         <div className={"grid grid-cols-3 gap-3"}>
-          <img src={imageMovie + (detailMovie.poster_path || detailMovie.profile_path)}
-               alt={detailMovie.title || detailMovie.name} className={"col-end-1 rounded-lg"}/>
+          <img src={imageMovie + (detail.poster_path || detail.profile_path)}
+               alt={detail.title || detail.name} className={"col-end-1 rounded-lg"}/>
 
           <div className={"col-span-2 flex flex-col justify-between"}>
 
             <div>
               <p className={"font-medium text-xl flex items-center gap-3 "}>
-                {detailMovie.title || detailMovie.name}
+                {detail.title || detail.name}
                 <div>
-                  {hasFlag(convertIso(detailMovie.original_language)) ? (
+                  {hasFlag(convertIso(detail.original_language)) ? (
                     <img
                       alt="Country Flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${convertIso(detailMovie.original_language)}.svg`}
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${convertIso(detail.original_language)}.svg`}
                       className={"size-5"}
                     />
                   ) : (
@@ -96,19 +80,19 @@ function DetailMovie() {
                   )}
                 </div>
               </p>
-              <p className={"text-sm"}>{detailMovie.release_date}</p>
-              <p className={"text-sm mt-5"}>{detailMovie.overview}</p>
+              <p className={"text-sm"}>{detail.release_date}</p>
+              <p className={"text-sm mt-5"}>{detail.overview}</p>
             </div>
 
 
             <div className={"flex items-center justify-between"}>
-              <div className={"grid grid-cols-2 w-1/2 gap-2"}>
-                {renderGenres(detailMovie.genre_ids)}
+              <div className={"grid grid-cols-4 w-2/3 gap-2"}>
+                {renderGenres(detail.genre_ids)}
               </div>
               <div className="radial-progress text-indigo-400 "
-                   style={{"--value": (detailMovie.vote_average * 1000) / 100}}
+                   style={{"--value": (detail.vote_average * 1000) / 100}}
                    role="progressbar">
-                {(detailMovie.vote_average * 1000) / 100}%
+                {(detail.vote_average * 1000) / 100}%
               </div>
             </div>
           </div>

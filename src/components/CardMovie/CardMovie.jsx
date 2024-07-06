@@ -7,12 +7,12 @@ import {useNavigate} from "react-router-dom";
 const CardMovie = ({ image, title, link, rating }) => {
   const navigate = useNavigate();
   return (
-    <div className="w-full rounded-xl shadow-xl pb-3 cursor-pointer" onClick={() => navigate(link)}>
-      <figure className="w-full">
+    <div className="w-full h-96 rounded-xl shadow-xl  cursor-pointer" onClick={() => navigate(link)}>
+      <figure className="w-full h-[80%]">
         <img
           src={image}
           alt="Image not found"
-          className="rounded-xl xs:w-full sm:w-full"
+          className="rounded-xl xs:w-full sm:w-full "
         />
       </figure>
       <div className="pl-2 mt-1">
