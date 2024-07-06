@@ -1,7 +1,11 @@
 import {createBrowserRouter} from "react-router-dom";
-import MainLayout from "../Layout/MainLayout";
+
 import {DetailMovie, FavoritePage, HomePage, PopularRightNow} from "../pages";
 import {PageNotFound} from "../components/index.js";
+
+// Layout
+import MainLayout from "../Layout/MainLayout";
+import {Login, SignUp} from "../pages/index.js";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +31,16 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "*", element: <PageNotFound/>
+    path: "*",
+    element: <PageNotFound/>
   },
+  {
+    path: "login",
+    element: <Login/>
+  },
+  {
+    path: "register",
+    element: <SignUp/>
+  },
+
 ]);
