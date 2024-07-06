@@ -1,56 +1,61 @@
 import {useState, useRef, useEffect} from "react";
 import propTypes from "prop-types";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {FaSearch} from "react-icons/fa";
 import {MdFavoriteBorder} from "react-icons/md";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Buttons} from "../index.js";
+import {setDataDetail} from "../../redux/slice/detailSlice.js";
+import {CgProfile} from "react-icons/cg";
 
 // Profile Dropdown
 const ProfileDropDown = (props) => {
   const [state, setState] = useState(false);
+  const [user, setUser] = useState({});
   const profileRef = useRef();
 
-  const navigation = [{title: "Dashboard", path: ""}, {title: "Settings", path: ""}, {title: "Log out", path: ""},];
+  const navigation = [
+    {title: "Dashboard", path: ""},
+    {title: "Settings", path: ""},
+    {title: "Log out", path: ""},
+  ];
 
   useEffect(() => {
     const handleDropDown = (e) => {
       if (!profileRef.current.contains(e.target)) setState(false);
     };
     document.addEventListener("click", handleDropDown);
+
+    const storedUser = sessionStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
   }, []);
 
-  return (<div className={`relative ${props.class} font-poppins`}>
-    <div className="flex items-center space-x-4">
-      <button
-        ref={profileRef}
-        className="w-10 h-10 outline-none rounded-full ring-offset-2 ring-gray-200 ring-2 lg:focus:ring-indigo-600"
-        onClick={() => setState(!state)}
-      >
-        <img
-          src="https://randomuser.me/api/portraits/men/46.jpg"
-          className="w-full h-full rounded-full"
-        />
-      </button>
-      <div className="lg:hidden">
-        <span className="block">Micheal John</span>
-        <span className="block text-sm text-gray-500">john@gmail.com</span>
-      </div>
+  return (
+    <div ref={profileRef} className={`relative ${props.class} font-poppins`}>
+      {Object.keys(user).length > 0 ? (
+        <details className="dropdown dropdown-end">
+          <summary className="btn m-1">
+            <CgProfile size={25}/>
+          </summary>
+
+          <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+            {navigation.map((item, index) => (
+              <li key={index}>
+                <Link to={item.path}>{item.title}</Link>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : (
+        <Link to={"/login"} className={"btn w-36"}>
+          Sign in
+        </Link>
+      )}
     </div>
-    <ul
-      className={`bg-primary top-12 right-0 mt-5 space-y-5 lg:absolute lg:border lg:rounded-md lg:text-sm lg:w-52 lg:shadow-md lg:space-y-0 lg:mt-0 ${state ? "" : "lg:hidden"}`}
-    >
-      {navigation.map((item, idx) => (<li key={idx}>
-        <a
-          key={idx}
-          className="block text-gray-600 lg:hover:bg-gray-50 lg:p-2.5"
-          href={item.path}
-        >
-          {item.title}
-        </a>
-      </li>))}
-    </ul>
-  </div>);
+  )
 };
 
 ProfileDropDown.propTypes = {
@@ -58,15 +63,19 @@ ProfileDropDown.propTypes = {
 };
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const favorite = useSelector((state) => state.cart.total)
   const data = useSelector((state) => state.cart.data)
   const [menuState, setMenuState] = useState(false);
 
   // Replace  path with your path
-  const navigation = [{title: "Customers", path: ""}, {title: "Careers", path: ""}, {
-    title: "Guides",
-    path: ""
-  }, {title: "Partners", path: ""},];
+  const navigation = [
+    {title: "Customers", path: ""},
+    {title: "Careers", path: ""},
+    {title: "Guides", path: ""},
+    {title: "Partners", path: ""},
+  ];
 
   return (<nav className="bg-primary border-b shadow-md font-poppins">
     <div className="flex items-center space-x-8 py-3 px-4 max-w-screen-xl mx-auto md:px-8">
@@ -86,19 +95,32 @@ const Navbar = () => {
           </ul>
           <ProfileDropDown class="mt-5 pt-5 border-t lg:hidden"/>
         </div>
-        <div className="flex-1 flex items-center justify-end space-x-2 sm:space-x-6">
-          <Link to={"search"}>
+        <div className="flex-1 flex items-center justify-end ">
+          <Link to={"search"} className={"btn"}>
             <FaSearch size={20} className={"text-gray-600"}/>
           </Link>
           <details className="dropdown">
             <summary className="btn m-1 indicator">
               {favorite > 0 && (<span className="indicator-item badge bg-indigo-600 text-white">{favorite}</span>)}
+
               <MdFavoriteBorder size={25} className={"text-gray-600"}/>
             </summary>
-            <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+            <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-56 p-2 shadow">
               {data.map((item) => (
-                <li key={item.id} className={"p-2"}>{item.title}</li>
+                <li key={item.id} className={"p-2"}>
+                  <div onClick={() => {
+                    dispatch(setDataDetail(item))
+                    navigate(`/detail-movie/${item.id}`)
+                  }}>
+                    {item.title || item.name}
+                  </div>
+                </li>
               ))}
+              {favorite === 0 && (
+                <li>
+                  <p>Empty favorites</p>
+                </li>
+              )}
               <li>
                 <Buttons
                   title={"See more"}
