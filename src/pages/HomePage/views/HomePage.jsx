@@ -5,6 +5,7 @@ import {setCategoryMovie} from "../../../redux/slice/categoryMovieSlice";
 import {imageMovie, movieGenreUrl, trendingMovieListUrl, tvSeriesUrl,} from "../../../constant/constant";
 import {getData} from "../../../controller/controller";
 import {setDataPopular, setDataTvSeries} from "../../../redux/slice/homepageSlice.js";
+import {setDataDetail} from "../../../redux/slice/detailSlice.js";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const HomePage = () => {
   const [tvIsLoading, setTvIsLoading] = useState(false);
 
 
+
   useEffect(() => {
     const getCategoryMovie = async () => {
       try {
@@ -30,6 +32,11 @@ const HomePage = () => {
         console.error("Error fetching data [CATEGORY]:", error);
       }
     };
+
+    if(sessionStorage.getItem("user")) {
+
+    }
+
 
     getTrendingMovie();
     getCategoryMovie();
@@ -167,14 +174,16 @@ const HomePage = () => {
                   <div className="skeleton"></div>
                 ) : (
                   Array.isArray(movieData) && movieData.length > 0 ? (
-                    movieData.slice(0, 6).map((movie, index) => (
-                      <CardMovie
-                        key={index}
-                        title={movie.title || movie.name}
-                        image={imageMovie + (movie.poster_path || movie.profile_path)}
-                        rating={Math.round(movie.vote_average)}
-                        link={`detail-movie/${movie.id}`}
-                      />
+                    movieData.slice(0, 6).map((movie) => (
+                      <div key={movie.id} onClick={() => dispatch(setDataDetail(movie))}>
+                        <CardMovie
+                          title={movie.title || movie.name}
+                          image={imageMovie + (movie.poster_path || movie.profile_path)}
+                          rating={Math.round(movie.vote_average)}
+                          link={`detail-movie/${movie.id}`}
+                        />
+                      </div>
+
                     ))
                   ) : (
                     <p className="text-gray-400">No data available.</p>
@@ -237,14 +246,16 @@ const HomePage = () => {
                     <div className="skeleton"></div>
                   ) : (
                     Array.isArray(tvValue) && tvValue.length > 0 ? (
-                      tvValue.slice(0, 6).map((movie, index) => (
-                        <CardMovie
-                          key={index}
-                          title={movie.title || movie.name}
-                          image={imageMovie + (movie.poster_path || movie.profile_path)}
-                          rating={Math.round(movie.vote_average)}
-                          link={`detail-movie/${movie.id}`}
-                        />
+                      tvValue.slice(0, 6).map((movie) => (
+                        <div key={movie.id} onClick={() => dispatch(setDataDetail(movie))}>
+                          <CardMovie
+                            title={movie.title || movie.name}
+                            image={imageMovie + (movie.poster_path || movie.profile_path)}
+                            rating={Math.round(movie.vote_average)}
+                            link={`detail-movie/${movie.id}`}
+                          />
+                        </div>
+
                       ))
                     ) : (
                       <p className="text-gray-400">No data available.</p>
